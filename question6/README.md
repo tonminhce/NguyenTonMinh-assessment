@@ -314,16 +314,6 @@ The database stores user data, scores, rate limits, and event logs. The schema e
    | password_hash | VARCHAR(255) | Hashed password                    |          |
    | created_at  | TIMESTAMP   | Timestamp when user was created    |          |
 
-   **SQL:**
-   
-   ```sql
-   CREATE TABLE users (
-       user_id INT PRIMARY KEY AUTO_INCREMENT,
-       username VARCHAR(255) NOT NULL UNIQUE,
-       email VARCHAR(255) NOT NULL UNIQUE,
-       password_hash VARCHAR(255) NOT NULL,
-       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-   );
 
 ### 2. **Score Table** (`scores`)
    - **Description**: Stores the score for each user.
@@ -338,16 +328,6 @@ The database stores user data, scores, rate limits, and event logs. The schema e
    | `score`       | INT         | User's current score               |          |
    | `last_updated`| TIMESTAMP   | Timestamp when score was last updated |          |
 
-   **SQL:**
-   ```sql
-   CREATE TABLE scores (
-       score_id INT PRIMARY KEY AUTO_INCREMENT,
-       user_id INT NOT NULL,
-       score INT NOT NULL DEFAULT 0,
-       last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-       FOREIGN KEY (user_id) REFERENCES users(user_id)
-   );
-
 ### 3. **Rate Limit Table** (`rate_limits`)
    - **Description**: Tracks the number of actions a user performs in a time window (for rate-limiting).
    - **Primary Key (PK)**: `rate_limit_id`
@@ -361,15 +341,6 @@ The database stores user data, scores, rate limits, and event logs. The schema e
    | `action_count`| INT         | Number of actions (e.g., score updates) performed in a time window |          |
    | `time_window` | TIMESTAMP   | Timestamp of the time window for rate limiting |          |
 
-   **SQL:**
-   ```sql
-   CREATE TABLE rate_limits (
-       rate_limit_id INT PRIMARY KEY AUTO_INCREMENT,
-       user_id INT NOT NULL,
-       action_count INT NOT NULL DEFAULT 0,
-       time_window TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-       FOREIGN KEY (user_id) REFERENCES users(user_id)
-   );
 
 ### 4. **Event Log Table** (`event_logs`)
    - **Description**: Logs events related to score updates, rate limit breaches, etc.
@@ -384,18 +355,6 @@ The database stores user data, scores, rate limits, and event logs. The schema e
    | `event_type`  | VARCHAR(255) | Type of event (e.g., "score update", "rate limit exceeded") |          |
    | `event_details` | TEXT      | Additional details about the event |          |
    | `timestamp`   | TIMESTAMP   | Timestamp of the event             |          |
-
-   **SQL:**
-   ```sql
-   CREATE TABLE event_logs (
-       event_id INT PRIMARY KEY AUTO_INCREMENT,
-       user_id INT NOT NULL,
-       event_type VARCHAR(255) NOT NULL,
-       event_details TEXT,
-       timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-       FOREIGN KEY (user_id) REFERENCES users(user_id)
-   );
-
 
 ## Suggestions for Improvement
 
